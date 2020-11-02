@@ -1,1 +1,0 @@
-auth_dict = {"password" : "yvijqjwetxfxltbr", "email_address" : r"elonmuskrobot@gmail.com"}
