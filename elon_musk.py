@@ -3,6 +3,8 @@ sys.path.append('./')
 from email_bot import EmailBot
 import time
 import random
+import requests
+from bs4 import BeautifulSoup
 
 class ElonMusk() :
     player_details = {}
@@ -11,9 +13,14 @@ class ElonMusk() :
     def __init__(self, number_of_players) :
         if not isinstance(number_of_players, int) :
             raise Exception(f"{number_of_players} must be int.")
+        elif number_of_players < 3 :
+            raise Exception("This game requires a minimum of 3 players.")
         else :
             self.number_of_players = number_of_players
             self.play()
+
+    def print_rules(self) :
+        print("Welcome to your game of Elon Musk.\n")
     
     def get_player_info(self) :
         verified = False
@@ -41,20 +48,30 @@ class ElonMusk() :
             print(f"Player {i}: {name}, {email}")
             i+=1
 
-    def print_rules(self) :
-        print("Welcome to your game of Elon Musk.\n")
+    def select_elon(self) :
+        self.elon = random.choice(list(self.player_details.keys()))
 
     def get_world_issue(self) :
-        self.world_issue = "Climate change"
+        number = random.choice(range(664))
+        url = f"http://encyclopedia.uia.org/en/problems?page={number}"
+        response = requests.get(url)
+        soup = BeautifulSoup(response.text, 'html.parser')
+        table = soup.find('tbody')
+        table_results = table.findAll('tr')
+        table_result = random.choice(table_results)
+        issue = table_result.find('a').text
+        #href = table_result.find('a')['href']
+        #issue_url = f"http://encyclopedia.uia.org//{href}"
+        #issue_response = response.get(issue_url)
+        #issue_soup = BeautifulSoup(issue_response.text, 'html.parser')
+        #can get extra info if needs be
+        self.world_issue = issue
 
     def launch_emailbot(self) :
         self.emailbot = EmailBot(self.world_issue, self.elon)
 
     def send_email(self, email, name) :
         self.emailbot.send_email(email, name)
-
-    def select_elon(self) :
-        self.elon = random.choice(list(self.player_details.keys()))
 
     def send_emails(self) :
         self.launch_emailbot()
@@ -70,4 +87,4 @@ class ElonMusk() :
         self.select_elon()
         self.send_emails()
 
-ElonMusk(3)
+ElonMusk(5)

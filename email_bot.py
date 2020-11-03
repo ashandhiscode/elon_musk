@@ -6,8 +6,8 @@ from email.mime.text import MIMEText
 import smtplib
 
 class EmailBot() :
-    email_address = r"elonmuskrobot@gmail.com"
-    auth = "yvijqjwetxfxltbr"
+    email_address = config.auth_dict['email_address']
+    auth = config.auth_dict['password']
 
     def __init__(self, world_issue, elon) :
         self.world_issue = world_issue
